@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ztt.server.mapper.AdminRoleMapper">
+
+    <insert id="addAdminRole">
+        insert into t_admin_role(adminId,rId) values
+        <foreach collection="rIds" item="rId" separator=",">
+            (#{adminId},#{rId})
+        </foreach>
+    </insert>
+</mapper>

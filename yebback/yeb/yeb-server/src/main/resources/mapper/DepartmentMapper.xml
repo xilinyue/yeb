@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ztt.server.mapper.DepartmentMapper">
+    <resultMap id="BaseResultMap" type="com.ztt.server.pojo.Department">
+        <id property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="parentId" column="parentId" />
+        <result property="depPath" column="depPath" />
+        <result property="enabled" column="enabled" />
+        <result property="isParent" column="isParent" />
+    </resultMap>
+
+    <resultMap id="DepartmentList" type="com.ztt.server.pojo.Department" extends="BaseResultMap">
+        <collection property="children" ofType="com.ztt.server.pojo.Department" select="com.ztt.server.mapper.DepartmentMapper.getDepartmentList"
+        column="id">
+        </collection>
+    </resultMap>
+    <sql id="BaseSql">
+        id,name,parentId,depPath,enabled,isParent
+    </sql>
+    <select id="getDepartmentList" resultMap="DepartmentList">
+        select
+        <include refid="BaseSql" />
+        from t_department
+        where parentId = #{id}
+    </select>
+    <select id="addDepartment" statementType="CALLABLE" resultMap="BaseResultMap">
+        CALL addDep(#{name,mode=IN,jdbcType=VARCHAR},#{parentId,mode=IN,jdbcType=INTEGER},
+        #{enabled,mode=IN,jdbcType=BOOLEAN},#{result,mode=OUT,jdbcType=INTEGER},
+        #{id,mode=OUT,jdbcType=INTEGER})
+    </select>
+    <select id="deleteDepartment" statementType="CALLABLE" resultMap="BaseResultMap">
+        CALL deleteDep(#{id,mode=IN,jdbcType=INTEGER},#{result,mode=OUT,jdbcType=INTEGER})
+    </select>
+</mapper>
